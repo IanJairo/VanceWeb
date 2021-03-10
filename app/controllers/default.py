@@ -7,7 +7,7 @@ from app import db, lm
 
 from werkzeug.urls import url_parse
 
-
+@app.route("/home")
 @app.route("/")
 def home():
     return render_template('home.html')
@@ -24,7 +24,7 @@ def signup():
     if form.validate_on_submit():
         r = User(
             name=form.name.data,
-            password=form.password.data,
+            set_password = form.password.data,
             email=form.email.data)
 
         db.session.add(r)
@@ -38,11 +38,16 @@ def signup():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        flash("Seja bem-vindo!")
+
+        return redirect(url_for('notes'))
+
     form = LogInForm()
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user and user.password == form.password.data:
+        if user  or not user.check_password(form.password.data):
             login_user(user)
             flash("Usuário Confirmado")
 
@@ -59,10 +64,11 @@ def login():
 
 
 @app.route("/logout", methods=['GET', 'POST'])
+@login_required
 def logout():
     logout_user()
     flash("Usuário Saiu")
-    return redirect(url_for("home"))
+    return redirect(url_for("login"))
 
 
 @app.route("/notes", methods=['GET', 'POST'])
