@@ -23,15 +23,22 @@ def signup():
     form = SignUpForm()
     if form.validate_on_submit():
         r = User(
-            name=form.name.data,
-            set_password = form.password.data,
+            name=form.name.data, 
             email=form.email.data)
+        r.set_password(form.password.data)
 
-        db.session.add(r)
-        db.session.commit()
+        confirmation = User.query.filter_by(email= form.email.data).first()
 
-        flash("Conta Criada")
-        return redirect(url_for('login'))
+        if (confirmation == None):
+            db.session.add(r)
+            db.session.commit()
+            flash("Conta Criada")
+            return redirect(url_for('login'))
+
+        else:
+            flash("Já exite uma conta com esse e-mail!")
+            
+        
 
     return render_template('signup.html', form=form)
 
@@ -47,7 +54,8 @@ def login():
 
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
-        if user  or not user.check_password(form.password.data):
+        if user and user.check_password(form.password.data):
+         
             login_user(user)
             flash("Usuário Confirmado")
 
@@ -59,7 +67,7 @@ def login():
 
         else:
             flash("Dados Invalidos")
-
+           
     return render_template('login.html', form=form)
 
 
