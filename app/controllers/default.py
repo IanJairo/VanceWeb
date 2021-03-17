@@ -1,5 +1,5 @@
 from app import app
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.forms import NoteForm, LogInForm, SignUpForm
 from app.models.tables import Note, User
@@ -93,5 +93,16 @@ def notes():
         return redirect(url_for("notes"))
 
     return render_template('notes.html', notes=notes, form=form)
+
+#Tratamento de erros
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('error.html', error_id=404, error_desc="Página não encontrada, cara!"), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    db.session.rollback()
+    return render_template('error.html', error_id=500, error_desc="Erro interno do servidor, cara!"), 500
 
 
