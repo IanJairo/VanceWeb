@@ -1,11 +1,19 @@
 {% extends "layout.html" %}
-{% block title %} Erro {{ error_id }} {% endblock %}
+{% block title %} Erro {{ error_id }} | Vance{% endblock %}
 {% block content %}
 
 <div class="jumbotron">
-    <h1> Erro {{ error_id }}</h1>
-    <h2> {{ error_desc }}</h2>
+    <div >
+        <div class="row">
+            <div class="col-xl-12 text-center">
+                <img src="{{img}}" style="width: 30%;" />
+
+                <h3 class="pt-5">{{ error_desc }}</h3>
+                <p>Se o erro persistir, entre em contato com um administrador.</p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!--Se divirta na estilização! :)-->
+
 {% endblock %}
