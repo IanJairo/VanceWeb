@@ -8,6 +8,7 @@ class User(db.Model):
     name = db.Column(db.String(60))
     password_hash = db.Column(db.String(180))
     email = db.Column(db.String, unique=True)
+    token = db.Column(db.Integer, default=0)
 
     notes = db.relationship('Note', backref='author', lazy='dynamic')
 

@@ -7,6 +7,8 @@ from app import db, lm
 
 from werkzeug.urls import url_parse
 
+import random
+
 
 @app.route("/home/")
 @app.route("/")
@@ -73,9 +75,15 @@ def login():
 @app.route("/perfil/", methods=['GET', 'POST'])
 @login_required
 def perfil():
+    form_delete = DeleteForm()
+
     user = User.query.get(current_user.id)
 
-    return render_template('perfil.html', user=user)
+    token = random.randint(1000, 50000)
+    user.token = token
+    db.session.commit()
+
+    return render_template('perfil.html', user=user, token=token)
 
 
 @app.route("/perfil/edit", methods=['GET', 'POST'])
@@ -87,10 +95,9 @@ def perfil_edit():
 
     if form.validate_on_submit():
         confirmation = None
-        if (form.email.data != user.email) :
+        if (form.email.data != user.email):
 
             confirmation = User.query.filter_by(email=form.email.data).first()
-        
 
         if(confirmation == None):
             user.name = form.name.data
@@ -103,6 +110,25 @@ def perfil_edit():
             flash("Já exite uma conta com esse e-mail!")
 
     return render_template('perfil-edit.html', user=user, form=form)
+
+
+@app.route("/perfil/delete/<int:id>/<int:token>/", methods=['GET', 'POST'])
+@login_required
+def perfil_delete(id, token):
+
+    user = User.query.get(id)
+
+    if(user is None or token != user.token):
+        return abort(404)
+
+    notes = user.notes
+
+    for note in notes:
+        db.session.delete(note)
+    db.session.delete(user)
+    db.session.commit()
+
+    return redirect(url_for("login"))
 
 
 @app.route("/logout", methods=['GET', 'POST'])
