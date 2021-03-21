@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models.forms import NoteForm, LogInForm, SignUpForm
+from app.models.forms import NoteForm, LogInForm, SignUpForm, DeleteForm
 from app.models.tables import Note, User
 from app import db, lm
 
@@ -94,17 +94,30 @@ def notes():
     return render_template('notes.html', notes=notes, form=form)
 
 
+@app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])
+@login_required
+def note_delete(id):
+    note = Note.query.get(id)
+
+    if(note is None):
+        return abort(404)
+
+    db.session.delete(note)
+    db.session.commit()
+    return redirect(url_for("notes"))
+
+
 @app.route("/notes/<int:id>/edit", methods=['GET', 'POST'])
 @login_required
 def note_edit(id):
     note = Note.query.get(id)
     form = NoteForm()
+ 
 
     if(note is None):
         return abort(404)
 
     if form.validate_on_submit():
-
         note.title = form.title.data
         note.content = form.content.data
         db.session.commit()

@@ -17,6 +17,7 @@ class LogInForm(FlaskForm):
     password = PasswordField('Senha', validators=[DataRequired()])
     submit = SubmitField('Enviar')
 
+
 class SignUpForm(FlaskForm):
     name = StringField('Nome', validators=[DataRequired()])
     email = StringField('E-mail', validators=[DataRequired()])
@@ -24,3 +25,6 @@ class SignUpForm(FlaskForm):
 
     submit = SubmitField('Enviar')
 
+
+class DeleteForm(FlaskForm):
+    submit = SubmitField('Excluir')
