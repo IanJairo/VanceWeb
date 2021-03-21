@@ -50,4 +50,4 @@ class Note(db.Model):
     # user = db.relationship('User', db.ForeignKey('users.id'))
 
     def __repr__(self):
-        return '<Note {} ({})>'.format(self.title, self.content)
+        return '<Note %r>' % self.id

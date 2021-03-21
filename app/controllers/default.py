@@ -8,7 +8,7 @@ from app import db, lm
 from werkzeug.urls import url_parse
 
 
-@app.route("/home")
+@app.route("/home/")
 @app.route("/")
 def home():
     return render_template('home.html')
@@ -19,7 +19,7 @@ def load_user(id):
     return User.query.filter_by(id=id).first()
 
 
-@app.route("/signup", methods=['GET', 'POST'])
+@app.route("/signup/", methods=['GET', 'POST'])
 def signup():
     form = SignUpForm()
     if form.validate_on_submit():
@@ -42,7 +42,7 @@ def signup():
     return render_template('signup.html', form=form)
 
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login/", methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
         flash("Seja bem-vindo!")
@@ -78,7 +78,7 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/notes", methods=['GET', 'POST'])
+@app.route("/notes/", methods=['GET', 'POST'])
 @login_required
 def notes():
     user = User.query.get(current_user.id)
@@ -92,6 +92,27 @@ def notes():
         return redirect(url_for("notes"))
 
     return render_template('notes.html', notes=notes, form=form)
+
+
+@app.route("/notes/<int:id>/edit", methods=['GET', 'POST'])
+@login_required
+def note_edit(id):
+    note = Note.query.get(id)
+    form = NoteForm()
+
+    if(note is None):
+        return abort(404)
+
+    if form.validate_on_submit():
+
+        note.title = form.title.data
+        note.content = form.content.data
+        db.session.commit()
+        return redirect(url_for("notes"))
+    else:
+        form.content.data = note.content
+
+    return render_template('note-edit.html', note=note, form=form)
 
 
 # Tratamento de erros
