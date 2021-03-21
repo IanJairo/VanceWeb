@@ -75,7 +75,6 @@ def login():
 @app.route("/perfil/", methods=['GET', 'POST'])
 @login_required
 def perfil():
-    form_delete = DeleteForm()
 
     user = User.query.get(current_user.id)
 
