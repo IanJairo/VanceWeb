@@ -70,6 +70,41 @@ def login():
     return render_template('login.html', form=form)
 
 
+@app.route("/perfil/", methods=['GET', 'POST'])
+@login_required
+def perfil():
+    user = User.query.get(current_user.id)
+
+    return render_template('perfil.html', user=user)
+
+
+@app.route("/perfil/edit", methods=['GET', 'POST'])
+@login_required
+def perfil_edit():
+
+    user = User.query.get(current_user.id)
+    form = SignUpForm()
+
+    if form.validate_on_submit():
+        confirmation = None
+        if (form.email.data != user.email) :
+
+            confirmation = User.query.filter_by(email=form.email.data).first()
+        
+
+        if(confirmation == None):
+            user.name = form.name.data
+            user.email = form.email.data
+            user.set_password(form.password.data)
+            db.session.commit()
+            return redirect(url_for("perfil"))
+
+        else:
+            flash("Já exite uma conta com esse e-mail!")
+
+    return render_template('perfil-edit.html', user=user, form=form)
+
+
 @app.route("/logout", methods=['GET', 'POST'])
 @login_required
 def logout():
@@ -112,7 +147,6 @@ def note_delete(id):
 def note_edit(id):
     note = Note.query.get(id)
     form = NoteForm()
- 
 
     if(note is None):
         return abort(404)
