@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models.forms import NoteForm, LogInForm, SignUpForm, DeleteForm
+from app.models.forms import NoteUpdateForm, NoteSendForm, LogInForm, SignUpForm, DeleteForm
 from app.models.tables import Note, User
 from app import db, lm
 
@@ -143,15 +143,27 @@ def logout():
 def notes():
     user = User.query.get(current_user.id)
     notes = user.notes
+    print('tururu')
+    form = NoteSendForm()
+    formUpdate = NoteUpdateForm()
+    
+    if formUpdate.validate_on_submit() and formUpdate.extra.data:
+        id=formUpdate.extra.data
+        note = Note.query.filter_by(id=id).first()
+        note.title = formUpdate.title.data
+        note.content = formUpdate.content.data
+        db.session.commit()
+        print('bbbbb')
+        return redirect(url_for("notes"))
 
-    form = NoteForm()
     if form.validate_on_submit():
         f = Note(title=form.title.data, content=form.content.data, author=user)
         db.session.add(f)
         db.session.commit()
+        print("aaaa")
         return redirect(url_for("notes"))
 
-    return render_template('notes.html', notes=notes, form=form)
+    return render_template('notes.html', notes=notes, form=form, formUpdate=formUpdate)
 
 
 @app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])
@@ -165,28 +177,26 @@ def note_delete(id):
     db.session.delete(note)
     db.session.commit()
     return redirect(url_for("notes"))
-
-
-@app.route("/notes/<int:id>/edit", methods=['GET', 'POST'])
-@login_required
-def note_edit(id):
-    note = Note.query.get(id)
-    form = NoteForm()
-
-    if(note is None):
-        return abort(404)
-
-    if form.validate_on_submit():
-        note.title = form.title.data
-        note.content = form.content.data
-        db.session.commit()
-        return redirect(url_for("notes"))
-    else:
-        form.content.data = note.content
-
-    return render_template('note-edit.html', note=note, form=form)
-
-
+#
+#
+#@app.route("/notes/<int:id>/edit", methods=['GET', 'POST'])
+#@login_required
+#def note_edit(id):
+#    note = Note.query.get(id)
+#    form = NoteForm()
+#
+#    if(note is None):
+#        return abort(404)
+#
+#    if form.validate_on_submit():
+#        note.title = form.title.data
+#        note.content = form.content.data
+#        db.session.commit()
+#        return redirect(url_for("notes"))
+#    else:
+#        form.content.data = note.content
+#
+#
 # Tratamento de erros
 @app.errorhandler(404)
 def not_found_error(error):

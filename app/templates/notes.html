@@ -1,81 +1,122 @@
-{% extends "layout.html" %}
-{% block title %}Vance{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block title %}Vance{% endblock %} {% block content %}
 
-<!-- Modal Cadastro-->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Nova Nota</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<div class="row">
+    <div class="col-12 col-md-3 p-md-0 pb-4">
+        <div class="">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Adicionar Nova Nota</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-      </div>
-      <div class="modal-body">
+                </div>
+                <div class="modal-body">
 
-        <form action="" method="post">
-          {{ form.hidden_tag() }}
-          <p>
-            {{ form.title.label }}<br>
-            {{ form.title(size=64, class="form-control") }}
-          </p>
-          <p>
-            {{ form.content.label }}<br>
-            {{ form.content(class="form-control", rows="3") }}
-          </p>
+                    <form action="" method="post">
+                        {{ form.hidden_tag() }}
+                        <p>
+                            {{ form.title.label }}<br> {{ form.title(size=64, class="form-control") }}
+                        </p>
+                        <p>
+                            {{ form.content.label }}<br> {{ form.content(class="form-control", rows="3") }}
+                        </p>
+                </div>
+                <div class="modal-footer">
+                    {{form.submit(class="btn btn-info")}}
+                </div>
 
-
-
-      </div>
-      <div class="modal-footer">
-        {{form.submit(class="btn btn-info")}}
-
-      </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
-
-
-{% if notes %}
-<div class="row mx-m-n5">
-
-  <div class="col-md-4 pb-4">
-    <div class="card">
-      <div class="card-body">
-        <h5 class="card-title">Olá</h5>
-        <h6 class="card-subtitle mb-2 text-muted">Nova Nota</h6>
-
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#exampleModal">Adicionar uma
-          nota</button>
-      </div>
-    </div>
-  </div>
-
-  {% for note in notes %}
-  <div class="col-md-4 pb-4">
-    <div class="card">
-      <div class="card-body">
-
-        <div class="d-flex justify-content-between">
-          <div>
-            <h5 class="card-title">{{note.title}}</h5>
-          </div>
-          <div>
-            <a href="{{ url_for( 'note_edit', id=note.id) }}" class="badge badge-info">Editar</a>
-          </div>
+                </form>
+            </div>
         </div>
-        <h6 class="card-subtitle mb-2 text-muted">{{note.data}}</h6>
-        <p class="card-text">
-          {{note.content}}
-        </p>
-      </div>
     </div>
-  </div>
-  {% endfor %}
-</div>
-{% endif %}
-{% endblock %}
+
+
+
+    <div class="col-12 col-md-9">
+        {% if notes %}
+        <div class="row mx-m-n5">
+
+            {% for note in notes %}
+            <div class="col-md-4 pb-4">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h5 class="card-title">{{note.title}}</h5>
+                            </div>
+                        </div>
+                        <h6 class="card-subtitle mb-2 text-muted">{{note.data.strftime('%d/%m/%Y')}}</h6>
+                        <p class="card-text">
+                            {{note.content}}
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        <div class="row">
+                            <div class="col-4 p-0 pr-2">
+                                <a href="" data-toggle="modal" data-target="#Modal{{note.id}}" class="w-100 py-2 badge badge-info">Editar</a> <br>
+                            </div>
+                            <div class="col-4 p-0">
+                                <a href="" data-toggle="modal" data-target="#Modal{{note.id}}" class="w-100 py-2 badge badge-info">Enviar</a> <br>
+                            </div>
+                            <div class="col-4 p-0 pl-2">
+                                <a data-toggle="modal" data-target="#deleteModal{{note.id}}" class="w-100 py-2 badge btn-danger">Excluir</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal delete-->
+            <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel">Realmente deseja excluir?</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+                        </div>
+
+                        <div class="modal-footer">
+                            <a href="{{ url_for( 'note_delete', id=note.id) }}" class="btn btn-danger">Excluir</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal Edição-->
+            <div class="modal fade" id="Modal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Editar {{note.title}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="/notes/" method="post">
+                                {{ formUpdate.hidden_tag() }}
+                                <p>
+                                    {{ formUpdate.extra(size=64, value=note.id, class="d-none") }} {{ formUpdate.title.label }}<br> {{ formUpdate.title(size=64, value=note.title, class="form-control") }}
+                                </p>
+                                <p>
+                                    {% set f = formUpdate.content.process_data(note.content) %} {{ formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control", rows="3", default="daast") }}
+                                </p>
+                        </div>
+                        <div class="modal-footer">
+                            {{formUpdate.submit(class="btn btn-info")}}
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div> {% endblock %}

@@ -1,10 +1,18 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
 from wtforms.validators import DataRequired
 from wtforms.widgets import TextArea
 
 
-class NoteForm(FlaskForm):
+class NoteUpdateForm(FlaskForm):
+    extra = StringField(6, validators=[DataRequired()])
+    title = StringField('Título', validators=[DataRequired()])
+    content = StringField('Descrição', widget=TextArea(),
+                          validators=[DataRequired()])
+
+    submit = SubmitField('Enviar')
+
+class NoteSendForm(FlaskForm):
     title = StringField('Título', validators=[DataRequired()])
     content = StringField('Descrição', widget=TextArea(),
                           validators=[DataRequired()])
