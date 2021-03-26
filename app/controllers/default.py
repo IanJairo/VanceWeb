@@ -1,7 +1,7 @@
 from app import app
 from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
-from app.models.forms import NoteUpdateForm, NoteSendForm, LogInForm, SignUpForm, DeleteForm
+from app.models.forms import NoteUpdateForm, NoteSendForm, NoteShareForm, LogInForm, SignUpForm, DeleteForm
 from app.models.tables import Note, User
 from app import db, lm
 
@@ -146,6 +146,7 @@ def notes():
     print('tururu')
     form = NoteSendForm()
     formUpdate = NoteUpdateForm()
+    formShare = NoteShareForm()
     
     if formUpdate.validate_on_submit() and formUpdate.extra.data:
         id=formUpdate.extra.data
@@ -163,7 +164,10 @@ def notes():
         print("aaaa")
         return redirect(url_for("notes"))
 
-    return render_template('notes.html', notes=notes, form=form, formUpdate=formUpdate)
+    if formShare.validate_on_submit():
+        return redirect(url_for("notes"))
+
+    return render_template('notes.html', notes=notes, form=form, formUpdate=formUpdate, formShare=formShare)
 
 
 @app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])

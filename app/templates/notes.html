@@ -39,29 +39,33 @@
             {% for note in notes %}
             <div class="col-md-4 pb-4">
                 <div class="card">
-                    <div class="card-body">
-
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <h5 class="card-title">{{note.title}}</h5>
+                    <div class="card-body d-flex">
+                        <div class="content col-10 p-0">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="">
+                                    <h5 class="card-title">{{note.title}}</h5>
+                                </div>
                             </div>
+                            <h6 class="card-subtitle mb-2 text-muted">{{note.data.strftime('%d/%m/%Y')}}</h6>
+                            <p class="card-text">
+                                {{note.content}}
+                            </p>
                         </div>
-                        <h6 class="card-subtitle mb-2 text-muted">{{note.data.strftime('%d/%m/%Y')}}</h6>
-                        <p class="card-text">
-                            {{note.content}}
-                        </p>
-                    </div>
-                    <div class="card-footer">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="" data-toggle="modal" data-target="#Modal{{note.id}}" class="w-100 py-2 badge badge-info">Editar</a> <br>
-                            </div>
-                            <div class="col-6">
-                                <a data-toggle="modal" data-target="#deleteModal{{note.id}}" class="w-100 py-2 badge btn-danger">Excluir</a>
-                            </div>
-
+                        <div class="options col-2 pr-0 align-items-stretch">
+                            <button type="button" class="close" data-toggle="modal" data-target="#Modal{{note.id}}">
+                            <span class="material-icons">mode_edit</span>
+                          </button>
+                            <br>
+                            <button type="button" class="close" class="close" data-toggle="modal" data-target="#shareModal{{note.id}}">
+                            <span class="material-icons">share</span>
+                          </button>
+                            <br>
+                            <button type="button" class="close" data-toggle="modal" data-target="#deleteModal{{note.id}}" aria-label="Close">
+                            <span class="material-icons">delete</span>
+                          </button>
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -107,6 +111,34 @@
                         </div>
                         <div class="modal-footer">
                             {{formUpdate.submit(class="btn btn-info")}}
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!--Modal Compartilhamento-->
+            <div class="modal fade" id="shareModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Compartilhar {{note.title}}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="/notes/" method="post">
+                                {{ formShare.hidden_tag() }}
+                                <p>
+                                    {{ formShare.select.label }}<br> {{ formShare.select(class="form-control") }}
+                                </p>
+                                <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3", default="daast") }}
+                                </p>
+                        </div>
+                        <div class="modal-footer">
+                            {{formShare.submit(class="btn btn-info")}}
                         </div>
                         </form>
                     </div>

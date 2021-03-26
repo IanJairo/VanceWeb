@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, HiddenField, SelectField
 from wtforms.validators import DataRequired
 from wtforms.widgets import TextArea
 
@@ -16,6 +16,12 @@ class NoteSendForm(FlaskForm):
     title = StringField('Título', validators=[DataRequired()])
     content = StringField('Descrição', widget=TextArea(),
                           validators=[DataRequired()])
+
+    submit = SubmitField('Enviar')
+
+class NoteShareForm(FlaskForm):
+    select = SelectField('Cargo', choices=[('1', 'Editor'), ('2', 'Leitor')])
+    email = StringField('Email do usuário', validators=[DataRequired()])
 
     submit = SubmitField('Enviar')
 
