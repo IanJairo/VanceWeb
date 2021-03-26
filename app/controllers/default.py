@@ -2,7 +2,7 @@ from app import app
 from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.forms import NoteUpdateForm, NoteSendForm, NoteShareForm, LogInForm, SignUpForm, DeleteForm
-from app.models.tables import Note, User
+from app.models.tables import Note, User, User_note
 from app import db, lm
 
 from werkzeug.urls import url_parse
@@ -147,9 +147,9 @@ def notes():
     form = NoteSendForm()
     formUpdate = NoteUpdateForm()
     formShare = NoteShareForm()
-    
+
     if formUpdate.validate_on_submit() and formUpdate.extra.data:
-        id=formUpdate.extra.data
+        id = formUpdate.extra.data
         note = Note.query.filter_by(id=id).first()
         note.title = formUpdate.title.data
         note.content = formUpdate.content.data
@@ -165,6 +165,21 @@ def notes():
         return redirect(url_for("notes"))
 
     if formShare.validate_on_submit():
+        user_id = User.query.filter_by(email=formShare.email.data).first()
+
+        if (user_id == None):
+            flash("Não existe uma conta com esse e-mail!" )
+
+        else:
+
+            f = User_note(
+                user_id=user_id.id,
+                note_id=formShare.note_id.data,
+                role=formShare.role.data)
+
+            db.session.add(f)
+            db.session.commit()
+            flash("Nota compartilhada com sucesso")
         return redirect(url_for("notes"))
 
     return render_template('notes.html', notes=notes, form=form, formUpdate=formUpdate, formShare=formShare)
@@ -181,27 +196,10 @@ def note_delete(id):
     db.session.delete(note)
     db.session.commit()
     return redirect(url_for("notes"))
-#
-#
-#@app.route("/notes/<int:id>/edit", methods=['GET', 'POST'])
-#@login_required
-#def note_edit(id):
-#    note = Note.query.get(id)
-#    form = NoteForm()
-#
-#    if(note is None):
-#        return abort(404)
-#
-#    if form.validate_on_submit():
-#        note.title = form.title.data
-#        note.content = form.content.data
-#        db.session.commit()
-#        return redirect(url_for("notes"))
-#    else:
-#        form.content.data = note.content
-#
-#
+
 # Tratamento de erros
+
+
 @app.errorhandler(404)
 def not_found_error(error):
     img = url_for('static', filename='imgs/error_404.svg')
