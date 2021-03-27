@@ -56,13 +56,11 @@
                                 <span class="material-icons">mode_edit</span>
                             </button>
                             <br>
-                            <button type="button" class="close" class="close" data-toggle="modal"
-                                data-target="#shareModal{{note.id}}">
+                            <button type="button" class="close" class="close" data-toggle="modal" data-target="#shareModal{{note.id}}">
                                 <span class="material-icons">share</span>
                             </button>
                             <br>
-                            <button type="button" class="close" data-toggle="modal"
-                                data-target="#deleteModal{{note.id}}" aria-label="Close">
+                            <button type="button" class="close" data-toggle="modal" data-target="#deleteModal{{note.id}}" aria-label="Close">
                                 <span class="material-icons">delete</span>
                             </button>
                         </div>
@@ -72,8 +70,7 @@
             </div>
 
             <!--Modal delete-->
-            <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -92,8 +89,7 @@
             </div>
 
             <!--Modal Edição-->
-            <div class="modal fade" id="Modal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="Modal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -107,14 +103,10 @@
                             <form action="/notes/" method="post">
                                 {{ formUpdate.hidden_tag() }}
                                 <p>
-                                    {{ formUpdate.extra(size=64, value=note.id, class="d-none") }} {{
-                                    formUpdate.title.label }}<br> {{ formUpdate.title(size=64, value=note.title,
-                                    class="form-control") }}
+                                    {{ formUpdate.extra(size=64, value=note.id, class="d-none") }} {{ formUpdate.title.label }}<br> {{ formUpdate.title(size=64, value=note.title, class="form-control") }}
                                 </p>
                                 <p>
-                                    {% set f = formUpdate.content.process_data(note.content) %} {{
-                                    formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control",
-                                    rows="3", default="daast") }}
+                                    {% set f = formUpdate.content.process_data(note.content) %} {{ formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control", rows="3", default="daast") }}
                                 </p>
                         </div>
                         <div class="modal-footer">
@@ -126,8 +118,7 @@
             </div>
 
             <!--Modal Compartilhamento-->
-            <div class="modal fade" id="shareModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
+            <div class="modal fade" id="shareModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -141,11 +132,9 @@
                             <form action="/notes/" method="post">
                                 {{ formShare.hidden_tag() }}
                                 <p>
-                                    {{ formShare.note_id(value=note.id, class="d-none") }}
-                                    {{ formShare.role.label }}<br> {{ formShare.role(class="form-control") }}
+                                    {{ formShare.note_id(value=note.id, class="d-none") }} {{ formShare.role.label }}<br> {{ formShare.role(class="form-control") }}
                                 </p>
-                                <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3",
-                                    default="daast") }}
+                                <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3", default="daast") }}
                                 </p>
                         </div>
                         <div class="modal-footer">
@@ -157,13 +146,9 @@
             </div>
             {% endfor %}
         </div>
-        {% endif %}
-    </div>
-
-
-
-    <div class="col-12 col-md-9">
-        {% if share_notes %}
+        {% endif %} {% if share_notes %}
+        <hr>
+        <p>Notas compartilhadas com Você</p>
         <div class="row mx-m-n5">
 
             {% for note in share_notes %}

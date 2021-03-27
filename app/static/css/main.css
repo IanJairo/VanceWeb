@@ -38,3 +38,13 @@ body {
 .card {
     min-height: 196px;
 }
+
+hr {
+    border-width: 3px;
+    border-color: #fff;
+    margin-bottom: 0;
+}
+
+p {
+    color: #fff;
+}
