@@ -2,6 +2,11 @@ from app import db
 from datetime import datetime
 from werkzeug.security import check_password_hash, generate_password_hash
 
+user_note = db.Table('user_note',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
+    db.Column('note_id', db.Integer, db.ForeignKey('note.id'))
+)
+
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +16,13 @@ class User(db.Model):
     token = db.Column(db.Integer, default=0)
 
     notes = db.relationship('Note', backref='author', lazy='dynamic')
+
+
+
+    notes_sh = db.relationship('Note',
+                            secondary=user_note,
+                            backref=db.backref('authors', lazy='dynamic'),
+                            lazy='dynamic')                            
     # Password
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -48,14 +60,8 @@ class Note(db.Model):
     data = db.Column(db.Date(), default=datetime.today())
     # user = db.relationship('User', db.ForeignKey('users.id'))
 
+ 
     def __repr__(self):
         return '<Note %r>' % self.id
 
 
-class User_note(db.Model):
-    role = db.Column(db.Integer)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
-    note_id = db.Column(db.Integer, db.ForeignKey('note.id'), primary_key=True)
-
-    def __repr__(self):
-        return '<Note %r>' % self.role

@@ -2,7 +2,7 @@ from app import app
 from flask import request, render_template, redirect, url_for, flash, abort
 from flask_login import login_user, logout_user, login_required, current_user
 from app.models.forms import NoteUpdateForm, NoteSendForm, NoteShareForm, LogInForm, SignUpForm, DeleteForm
-from app.models.tables import Note, User, User_note
+from app.models.tables import Note, User
 from app import db, lm
 
 from werkzeug.urls import url_parse
@@ -143,7 +143,11 @@ def logout():
 def notes():
     user = User.query.get(current_user.id)
     notes = user.notes
-    print('tururu')
+    share_notes = user.notes_sh
+    print(share_notes)
+
+    for n in share_notes:
+        print(n.title)
     form = NoteSendForm()
     formUpdate = NoteUpdateForm()
     formShare = NoteShareForm()
@@ -165,24 +169,22 @@ def notes():
         return redirect(url_for("notes"))
 
     if formShare.validate_on_submit():
-        user_id = User.query.filter_by(email=formShare.email.data).first()
+        user = User.query.filter_by(email=formShare.email.data).first()
+        note = Note.query.get(formShare.note_id.data)
 
-        if (user_id == None):
+
+
+        if (user == None):
             flash("Não existe uma conta com esse e-mail!" )
 
         else:
 
-            f = User_note(
-                user_id=user_id.id,
-                note_id=formShare.note_id.data,
-                role=formShare.role.data)
-
-            db.session.add(f)
+            user.notes_sh.append(note)
             db.session.commit()
             flash("Nota compartilhada com sucesso")
         return redirect(url_for("notes"))
 
-    return render_template('notes.html', notes=notes, form=form, formUpdate=formUpdate, formShare=formShare)
+    return render_template('notes.html', share_notes=share_notes, notes=notes, form=form, formUpdate=formUpdate, formShare=formShare)
 
 
 @app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])
