@@ -1,6 +1,4 @@
-{% extends "layout.html" %}
-{% block title %}Perfil | Vance{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block title %}Perfil | Vance{% endblock %} {% block content %}
 
 
 <!-- Modal -->
@@ -9,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deleteModalLabel">Realmente deseja excluir?</h5>
-               
+
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -20,7 +18,7 @@
             </div>
 
             <div class="modal-footer">
-             
+
                 <a href="{{ url_for( 'perfil_delete', id=user.id, token=token) }}" class="btn btn-danger">Excluir</a>
 
             </div>
@@ -29,7 +27,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12 min-vh-100 d-flex flex-column justify-content-center">
+    <div class="col-md-12 h-100 d-flex flex-column justify-content-center">
         <div class="row">
             <div class="col-lg-6 col-md-8 mx-auto">
 
@@ -43,14 +41,14 @@
                                 <div class="d-flex flex-column">
                                     <span class="articles">Email:</span>
                                     <span class="number1">{{user.email}}</span>
-                                <br>
+                                    <br>
                                     <span class="followers">Notas escritas:</span>
                                     <span class="number2">{{user.notes.count()}}</span>
                                 </div>
                             </div>
                             <div class="button mt-2 d-flex flex-row align-items-center">
                                 <a href="{{ url_for( 'perfil_edit') }}" class="btn btn-sm btn-outline-info w-100">Editar</a>
-                                <a  data-toggle="modal" data-target="#deleteModal"  class="btn btn-sm btn-danger w-100 ml-2">Excluir</a>
+                                <a data-toggle="modal" data-target="#deleteModal" class="btn btn-sm btn-danger w-100 ml-2">Excluir</a>
 
                             </div>
                         </div>

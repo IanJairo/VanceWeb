@@ -1,8 +1,6 @@
-{% extends "layout.html" %}
-{% block title %}Vance{% endblock %}
-{% block content %}
+{% extends "layout.html" %} {% block title %}Vance{% endblock %} {% block content %}
 <div class="row">
-    <div class="col-md-12 min-vh-100 d-flex flex-column justify-content-center">
+    <div class="col-md-12 h-100 d-flex flex-column justify-content-center">
         <div class="row">
             <div class="col-lg-6 col-md-8 mx-auto">
 
@@ -16,17 +14,14 @@
                             {{ form.hidden_tag() }}
 
                             <p>
-                                {{ form.name.label }}<br>
-                                {{ form.name(value=user.name,class="form-control form-control-lg rounded-0") }}
+                                {{ form.name.label }}<br> {{ form.name(value=user.name,class="form-control form-control-lg rounded-0") }}
                             </p>
                             <p>
-                                {{ form.email.label }}<br>
-                                {{ form.email(value=user.email, class="form-control form-control-lg rounded-0") }}
+                                {{ form.email.label }}<br> {{ form.email(value=user.email, class="form-control form-control-lg rounded-0") }}
                             </p>
 
                             <p>
-                                {{ form.password.label }}<br>
-                                {{ form.password(value=user.password, class="form-control form-control-lg rounded-0") }}
+                                {{ form.password.label }}<br> {{ form.password(value=user.password, class="form-control form-control-lg rounded-0") }}
                             </p>
 
                     </div>
