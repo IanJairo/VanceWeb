@@ -144,10 +144,9 @@ def notes():
     user = User.query.get(current_user.id)
     notes = user.notes
     share_notes = user.notes_sh
-    print(share_notes)
 
-    for n in share_notes:
-        print(n.title)
+
+
     form = NoteSendForm()
     formUpdate = NoteUpdateForm()
     formShare = NoteShareForm()
@@ -158,33 +157,51 @@ def notes():
         note.title = formUpdate.title.data
         note.content = formUpdate.content.data
         db.session.commit()
-        print('bbbbb')
+  
         return redirect(url_for("notes"))
 
     if form.validate_on_submit():
         f = Note(title=form.title.data, content=form.content.data, author=user)
         db.session.add(f)
         db.session.commit()
-        print("aaaa")
+       
         return redirect(url_for("notes"))
 
     if formShare.validate_on_submit():
         user = User.query.filter_by(email=formShare.email.data).first()
+
+        if(user is None):
+            return abort(404)
+
+        if (user.id == current_user.id):
+            flash("Essa nota já lhe pertence")
+            return redirect(url_for("notes"))
+
+
         note = Note.query.get(formShare.note_id.data)
 
+        share_note = user.notes_sh.filter_by(id=note.id).first()
+      
 
-
-        if (user == None):
-            flash("Não existe uma conta com esse e-mail!" )
-
-        else:
-
+        if share_note == None:
             user.notes_sh.append(note)
             db.session.commit()
             flash("Nota compartilhada com sucesso")
+
+        elif (user == None or note == None):
+            flash("Não existe uma conta com esse e-mail!" ) 
+        
+        else: 
+            flash("Você já compartilhou essa nota com esse usuário")          
+
         return redirect(url_for("notes"))
 
-    return render_template('notes.html', share_notes=share_notes, notes=notes, form=form, formUpdate=formUpdate, formShare=formShare)
+    return render_template('notes.html', 
+                                        share_notes=share_notes, 
+                                        notes=notes, form=form, 
+                                        formUpdate=formUpdate, 
+                                        formShare=formShare
+                                        )
 
 
 @app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])
@@ -201,6 +218,23 @@ def note_delete(id):
 
 # Tratamento de erros
 
+
+@app.route("/notes/share/<int:id>/delete", methods=['GET', 'POST'])
+@login_required
+def note_share_delete(id):
+    user = User.query.get(current_user.id) 
+    note = Note.query.get(id)
+
+    if(note is None):
+        return abort(404)
+
+    user.notes_sh.remove(note)
+    db.session.commit()
+
+
+    return redirect(url_for("notes"))
+
+# Trat
 
 @app.errorhandler(404)
 def not_found_error(error):
