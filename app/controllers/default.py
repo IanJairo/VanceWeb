@@ -230,9 +230,8 @@ def note_share_delete(id):
 
     user.notes_sh.remove(note)
     db.session.commit()
-
-
     return redirect(url_for("notes"))
+    flash("A nota não será mais compartilhada com esse usuário")
 
 @app.route("/notes/user/<int:note_id>/<int:usr_id>/remove", methods=['GET', 'POST'])
 @login_required

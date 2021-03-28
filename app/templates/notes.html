@@ -111,9 +111,6 @@
                             {{formUpdate.submit(class="btn btn-info")}}
                         </div>
                         </form>
-
-
-
                     </div>
                 </div>
             </div>
@@ -133,8 +130,7 @@
                             <form action="/notes/" method="post">
                                 {{ formShare.hidden_tag() }}
                                 <p>
-                                    {{ formShare.note_id(value=note.id, class="d-none") }} {{ formShare.role.label }}
-                                    <br> {{ formShare.role(class="form-control") }}
+                                    {{ formShare.note_id(value=note.id, class="d-none") }} {{ formShare.role(class="d-none") }}
                                 </p>
                                 <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3", default="daast") }}
                                 </p>
