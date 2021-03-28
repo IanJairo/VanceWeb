@@ -108,11 +108,33 @@
                                 <p>
                                     {% set f = formUpdate.content.process_data(note.content) %} {{ formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control", rows="3", default="daast") }}
                                 </p>
+                                <hr>
+                                <p>
+                                    Compartilhada com:
+                                </p>
+                                {% set shared_users = note.authors.all() %} {% for usr in shared_users %}
+                                <div class="row">
+                                    <div class="col-10">
+                                        <p>
+                                            {{usr.name}}
+                                        </p>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="close" data-toggle="modal" data-target="#deleteShareModal{{note.id}}{{usr.id}}" aria-label="Close">
+                                            <span class="material-icons" href="{{ url_for( 'note_share_delete', id_note=note.id, id_usr=usr.id) }}">delete</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
                         </div>
                         <div class="modal-footer">
                             {{formUpdate.submit(class="btn btn-info")}}
                         </div>
                         </form>
+
+
+
                     </div>
                 </div>
             </div>
