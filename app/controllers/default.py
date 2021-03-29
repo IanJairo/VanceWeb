@@ -85,11 +85,13 @@ def perfil():
 
     user = User.query.get(current_user.id)
 
+
     token = random.randint(1000, 50000)
     user.token = token
     db.session.commit()
 
-    return render_template('perfil.html', user=user, token=token)
+    return render_template('perfil.html', user=user, 
+                                        token=token)
 
 
 @app.route("/perfil/edit", methods=['GET', 'POST'])
