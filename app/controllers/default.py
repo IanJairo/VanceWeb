@@ -133,7 +133,7 @@ def perfil_delete(id, token):
     share_notes = user.notes_sh
 
     for note in share_notes:
-        db.session.remove(note)
+        share_notes.remove(note)
 
     for note in notes:
         db.session.delete(note)
