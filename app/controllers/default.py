@@ -71,6 +71,13 @@ def login():
 
     return render_template('login.html', form=form)
 
+@app.route("/logout", methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    flash("Usuário Saiu")
+    return redirect(url_for("login"))
+
 
 @app.route("/perfil/", methods=['GET', 'POST'])
 @login_required
@@ -130,12 +137,6 @@ def perfil_delete(id, token):
     return redirect(url_for("login"))
 
 
-@app.route("/logout", methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-    flash("Usuário Saiu")
-    return redirect(url_for("login"))
 
 
 @app.route("/notes/", methods=['GET', 'POST'])
@@ -145,11 +146,15 @@ def notes():
     notes = user.notes
     share_notes = user.notes_sh
 
-
-
     form = NoteSendForm()
     formUpdate = NoteUpdateForm()
     formShare = NoteShareForm()
+
+    if form.validate_on_submit():
+        f = Note(title=form.title.data, content=form.content.data, author=user)
+        db.session.add(f)
+        db.session.commit()
+        return redirect(url_for("notes"))
 
     if formUpdate.validate_on_submit() and formUpdate.extra.data:
         id = formUpdate.extra.data
@@ -158,41 +163,30 @@ def notes():
         note.content = formUpdate.content.data
         db.session.commit()
   
-        return redirect(url_for("notes"))
-
-    if form.validate_on_submit():
-        f = Note(title=form.title.data, content=form.content.data, author=user)
-        db.session.add(f)
-        db.session.commit()
-       
-        return redirect(url_for("notes"))
+        return redirect(url_for("notes")) 
 
     if formShare.validate_on_submit():
         user = User.query.filter_by(email=formShare.email.data).first()
 
-        if(user is None):
-            return abort(404)
-
-        if (user.id == current_user.id):
-            flash("Essa nota já lhe pertence")
-            return redirect(url_for("notes"))
+        if(user is not None):
+            note = Note.query.get(formShare.note_id.data)
+            share_note = user.notes_sh.filter_by(id=note.id).first()
 
 
-        note = Note.query.get(formShare.note_id.data)
+            if (user.id == current_user.id):
+                flash("Essa nota já lhe pertence")
 
-        share_note = user.notes_sh.filter_by(id=note.id).first()
-      
 
-        if share_note == None:
-            user.notes_sh.append(note)
-            db.session.commit()
-            flash("Nota compartilhada com sucesso")
+            elif share_note == None:
+                user.notes_sh.append(note)
+                db.session.commit()
+                flash("Nota compartilhada com sucesso")
 
-        elif (user == None or note == None):
+            else: 
+                flash("Você já compartilhou essa nota com esse usuário")     
+        else:     
             flash("Não existe uma conta com esse e-mail!" ) 
-        
-        else: 
-            flash("Você já compartilhou essa nota com esse usuário")          
+
 
         return redirect(url_for("notes"))
 
@@ -200,8 +194,7 @@ def notes():
                                         share_notes=share_notes, 
                                         notes=notes, form=form, 
                                         formUpdate=formUpdate, 
-                                        formShare=formShare
-                                        )
+                                        formShare=formShare)
 
 
 @app.route("/notes/<int:id>/delete", methods=['GET', 'POST'])
@@ -216,7 +209,6 @@ def note_delete(id):
     db.session.commit()
     return redirect(url_for("notes"))
 
-# Tratamento de erros
 
 
 @app.route("/notes/share/<int:id>/delete", methods=['GET', 'POST'])
@@ -230,22 +222,29 @@ def note_share_delete(id):
 
     user.notes_sh.remove(note)
     db.session.commit()
-    return redirect(url_for("notes"))
+
     flash("A nota não será mais compartilhada com esse usuário")
+    
+    return redirect(url_for("notes"))
+
 
 @app.route("/notes/user/<int:note_id>/<int:usr_id>/remove", methods=['GET', 'POST'])
 @login_required
 def note_user_remove(usr_id, note_id):
     user = User.query.get(usr_id)
     note = Note.query.get(note_id)
-    if(note is None):
+
+    if(note is None or user is None):
         return abort(404)
+
     user.notes_sh.remove(note)
     db.session.commit()
+
+    flash("Nota excluída com sucesso")
+
     return redirect(url_for("notes"))
 
-# Trat
-
+# Error handling
 @app.errorhandler(404)
 def not_found_error(error):
     img = url_for('static', filename='imgs/error_404.svg')

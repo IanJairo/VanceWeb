@@ -1,6 +1,8 @@
 {% extends "layout.html" %} {% block title %}Vance{% endblock %} {% block content %}
 
 <div class="row">
+
+    <!--Add Form -->
     <div class="col-12 col-md-3 p-md-0 pb-4">
         <div class="">
             <div class="modal-content">
@@ -30,7 +32,10 @@
 
 
 
+    <!-- list of notes -->
     <div class="col-12 col-md-9">
+
+        <!-- list of own notes-->
         {% if notes %}
         <div class="row mx-m-n5">
 
@@ -54,11 +59,13 @@
                                 <span class="material-icons">mode_edit</span>
                             </button>
                             <br>
-                            <button type="button" class="close" class="close" data-toggle="modal" data-target="#shareModal{{note.id}}">
+                            <button type="button" class="close" class="close" data-toggle="modal"
+                                data-target="#shareModal{{note.id}}">
                                 <span class="material-icons">share</span>
                             </button>
                             <br>
-                            <button type="button" class="close" data-toggle="modal" data-target="#deleteModal{{note.id}}" aria-label="Close">
+                            <button type="button" class="close" data-toggle="modal"
+                                data-target="#deleteModal{{note.id}}" aria-label="Close">
                                 <span class="material-icons">delete</span>
                             </button>
                         </div>
@@ -67,8 +74,9 @@
                 </div>
             </div>
 
-            <!--Modal delete-->
-            <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <!--Removal Modal -->
+            <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -86,8 +94,9 @@
                 </div>
             </div>
 
-            <!--Modal Edição-->
-            <div class="modal fade" id="Modal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!--Editing Modal-->
+            <div class="modal fade" id="Modal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -101,10 +110,14 @@
                             <form action="/notes/" method="post">
                                 {{ formUpdate.hidden_tag() }}
                                 <p>
-                                    {{ formUpdate.extra(size=64, value=note.id, class="d-none") }} {{ formUpdate.title.label }}<br> {{ formUpdate.title(size=64, value=note.title, class="form-control") }}
+                                    {{ formUpdate.extra(size=64, value=note.id, class="d-none") }} {{
+                                    formUpdate.title.label }}<br> {{ formUpdate.title(size=64, value=note.title,
+                                    class="form-control") }}
                                 </p>
                                 <p>
-                                    {% set f = formUpdate.content.process_data(note.content) %} {{ formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control", rows="3", default="daast") }}
+                                    {% set f = formUpdate.content.process_data(note.content) %} {{
+                                    formUpdate.content.label }}<br> {{ formUpdate.content( class="form-control",
+                                    rows="3", default="daast") }}
                                 </p>
                         </div>
                         <div class="modal-footer">
@@ -115,8 +128,9 @@
                 </div>
             </div>
 
-            <!--Modal Compartilhamento-->
-            <div class="modal fade" id="shareModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <!--Sharing Modal-->
+            <div class="modal fade" id="shareModal{{note.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -126,33 +140,37 @@
                             </button>
                         </div>
                         <div class="modal-body">
+                            <hr> {% set shared_users = note.authors.all() %} {% if shared_users %}
+                            <p>
+                                Compartilhada com:
+                            </p>
+                            {% for usr in shared_users %}
+                            <div class="row">
+                                <div class="col-10">
+                                    <p>
+                                        {{usr.name}} - {{usr.email}}
+                                    </p>
+                                </div>
+                                <div class="col-2">
+                                    <a href="{{ url_for( 'note_user_remove', note_id=note.id, usr_id=usr.id) }}"
+                                        class="close">
+                                        <span class="material-icons">delete</span>
+                                    </a>
+                                </div>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
 
                             <form action="/notes/" method="post">
                                 {{ formShare.hidden_tag() }}
                                 <p>
-                                    {{ formShare.note_id(value=note.id, class="d-none") }} {{ formShare.role(class="d-none") }}
+                                    {{ formShare.note_id(value=note.id, class="d-none") }}
                                 </p>
-                                <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3", default="daast") }}
+                                <p>{{ formShare.email.label }}<br> {{ formShare.email( class="form-control", rows="3",
+                                    default="daast") }}
                                 </p>
 
-                                <hr> {% set shared_users = note.authors.all() %} {% if shared_users %}
-                                <p>
-                                    Compartilhada com:
-                                </p>
-                                {% for usr in shared_users %}
-                                <div class="row">
-                                    <div class="col-10">
-                                        <p>
-                                            {{usr.name}} - {{usr.email}}
-                                        </p>
-                                    </div>
-                                    <div class="col-2">
-                                        <a href="{{ url_for( 'note_user_remove', note_id=note.id, usr_id=usr.id) }}" class="close">
-                                            <span class="material-icons">delete</span>
-                                        </a>
-                                    </div>
-                                </div>
-                                {% endfor %} {% endif %}
                         </div>
                         <div class="modal-footer">
                             {{formShare.submit(class="btn btn-info")}}
@@ -165,11 +183,16 @@
 
             {% endfor %}
         </div>
-        {% endif %} {% if share_notes %}
+        {% endif %}
+
+
+        <!-- list of other notes -->
+        {% if share_notes %}
         <hr>
         <p class="color-notes-share">Notas compartilhadas com você</p>
-        <div class="row mx-m-n5">
 
+        <!-- list of shared notes -->
+        <div class="row mx-m-n5">
             {% for note in share_notes %}
             <div class="col-md-4 pb-4">
                 <div class="card">
@@ -188,7 +211,8 @@
 
                         <div class="options col-2 pr-0 align-items-stretch">
 
-                            <button type="button" class="close" data-toggle="modal" data-target="#deleteModal{{note.id}}" aria-label="Close">
+                            <button type="button" class="close" data-toggle="modal"
+                                data-target="#deleteModal{{note.id}}" aria-label="Close">
                                 <span class="material-icons">delete</span>
                             </button>
                         </div>
@@ -196,8 +220,9 @@
                     </div>
                 </div>
 
-                <!--Modal delete-->
-                <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <!--Removal Modal -->
+                <div class="modal fade" id="deleteModal{{note.id}}" tabindex="-1" aria-labelledby="deleteModalLabel"
+                    aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -208,16 +233,14 @@
                             </div>
 
                             <div class="modal-footer">
-                                <a href="{{ url_for( 'note_share_delete', id=note.id) }}" class="btn btn-danger">Excluir</a>
+                                <a href="{{ url_for( 'note_share_delete', id=note.id) }}"
+                                    class="btn btn-danger">Excluir</a>
 
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
-
             {% endfor %}
         </div>
         {% endif %}

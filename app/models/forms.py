@@ -20,9 +20,7 @@ class NoteSendForm(FlaskForm):
     submit = SubmitField('Enviar')
 
 class NoteShareForm(FlaskForm):
-    role = SelectField('Cargo', choices=[
-        (1, 'Editor'), 
-        (2, 'Leitor')])
+
     email = StringField('Email do usuário', validators=[DataRequired()])
     note_id = StringField(6, validators=[DataRequired()])
 
