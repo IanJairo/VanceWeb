@@ -130,6 +130,10 @@ def perfil_delete(id, token):
         return abort(404)
 
     notes = user.notes
+    share_notes = user.notes_sh
+
+    for note in share_notes:
+        db.session.remove(note)
 
     for note in notes:
         db.session.delete(note)
