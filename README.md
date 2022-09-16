@@ -9,7 +9,7 @@ Instalar pacotes(Linux):
   $ my_venv/bin/pip3 install -r requirements.txt
 
 Instalar pacotes(Windows):
-  $ python3 -m pip install -r requiremets.txt
+  $ python3 -m pip install -r requirements.txt
  
 Entrar no Ambiente virtual(Linux):
   $ . my_venv/bin/activate
