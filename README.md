@@ -1,25 +1,42 @@
-# VanceWeb
+# **VanceWeb**
 
-Para rodar:
+## App Description
 
-Criar entorno virtual:
-  $ python3 -m venv my_venv
+<p align="justify">Vance is a system of notes. With a login into the platform, all notes will be stored. In addition, it is possible to share specific notes with other users. </p>
 
-Instalar pacotes(Linux):
-  $ my_venv/bin/pip3 install -r requirements.txt
+## App Status:
+![status](https://img.shields.io/badge/-FINALIZADO-brightgreen)
 
-Instalar pacotes(Windows):
-  $ python3 -m pip install -r requirements.txt
+## Features:
+
+| **INTERFACE:**                                            |
+|-----------------------------------------------------------|
+| - [ x ] CRUD                                              |
+| - [ x ] Adding, editing and removing notes                |
+| - [ x ] Share notes with other users                      |
+| - [ x ] Share notes with other users                      |
+
+
+## Technologies Employed:  
+
+![Python](https://img.shields.io/badge/Python-blue)
+![Flask](https://img.shields.io/badge/Flask-orange)<br>
+
+
+## Requirements
+
+1. Create virtual environment:  $ python3 -m venv my_venv
+
+2. Instalar pacotes (Linux): $ my_venv/bin/pip3 install -r requirements.txt
+
+2. Instalar pacotes (Windows):$ python3 -m pip install -r requirements.txt
  
-Entrar no Ambiente virtual(Linux):
-  $ . my_venv/bin/activate
+3. Entrar no Ambiente virtual (Linux): $ . my_venv/bin/activate
 
-Entrar no Ambiente virtual(Windows):
-  $ .\my_venv\Scripts\activate
+3. Entrar no Ambiente virtual (Windows):  $ .\my_venv\Scripts\activate
   
-Atualizar banco:
-  $ python3 run.py db migrate
-  $ python3 run.py db upgrade
+4. Atualizar banco:
+  $ python3 run.py db migrate && python3 run.py db upgrade
 
-Iniciar plataforma:
+5. Iniciar plataforma:
   $ python3 run.py runserver
